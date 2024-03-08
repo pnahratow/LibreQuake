@@ -14,5 +14,3 @@ jobs:
     - uses: actions/checkout@v3
     - name: Install dependecies
       run: source cibuild.sh
-    - name: Build release
-      run: python build.py
