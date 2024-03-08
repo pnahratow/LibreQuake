@@ -35,3 +35,5 @@ wget -O ericw-tools.zip "$ERICW_TOOL_URL"
 unzip ericw-tools.zip
 export PATH="$ERICW_TOOL_DIR:$PATH"
 
+cd "$repo_root"
+time python3 build.py
