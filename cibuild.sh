@@ -5,8 +5,8 @@ ERICW_TOOL_URL="https://github.com/ericwa/ericw-tools/releases/download/2.0.0-al
 
 repo_root=$(pwd)
 
-apt-get update
-apt-get install -y wget unzip build-essential cmake libz-dev libpng-dev python3
+sudo apt-get update
+sudo apt-get install -y wget unzip build-essential cmake libz-dev libpng-dev python3
 
 # Install QPAKMAN
 QPAKMAN_DIR="$(mktemp -d)"
