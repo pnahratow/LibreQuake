@@ -11,6 +11,8 @@ jobs:
     - name: Install dependecies
       run: bash -x install_deps.sh
     - name: Build release
+      env:
+        PYTHONUNBUFFERED: 1
       run: |
         export PATH="/tmp/qpakman:/tmp/fteqcc:/tmp/ericw-tools:$PATH"
-        time python3 build.py
+        python build.py
