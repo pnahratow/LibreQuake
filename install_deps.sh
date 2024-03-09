@@ -9,31 +9,25 @@ sudo apt-get update
 sudo apt-get install -y wget unzip build-essential cmake libz-dev libpng-dev python3
 
 # Install QPAKMAN
-QPAKMAN_DIR="$(mktemp -d)"
+QPAKMAN_DIR="/tmp/qpakman"
 mkdir -p "$QPAKMAN_DIR"
 cd "$QPAKMAN_DIR"
 wget -O qpakman.tar.gz "$QPAKMAN_URL"
 tar --strip-components 1 -xf qpakman.tar.gz
 cmake .
 make
-export PATH="$QPAKMAN_DIR:$PATH"
 
 # Install FTEQCC
-FTEQCC_DIR="$(mktemp -d)"
+FTEQCC_DIR="/tmp/fteqcc"
 mkdir -p "$FTEQCC_DIR"
 cd "$FTEQCC_DIR"
 wget -O fteqcc.zip "$FTEQCC_URL"
 unzip fteqcc.zip
 ln -s fteqcc64 fteqcc
-export PATH="$FTEQCC_DIR:$PATH"
 
 # Install ericw-tools
-ERICW_TOOL_DIR="$(mktemp -d)"
+ERICW_TOOL_DIR="/tmp/ericw-tools"
 mkdir -p "$ERICW_TOOL_DIR"
 cd "$ERICW_TOOL_DIR"
 wget -O ericw-tools.zip "$ERICW_TOOL_URL"
 unzip ericw-tools.zip
-export PATH="$ERICW_TOOL_DIR:$PATH"
-
-cd "$repo_root"
-time python3 build.py

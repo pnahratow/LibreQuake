@@ -3,14 +3,14 @@ name: Build release
 on:
   push:
 
-
-permissions:
-  contents: read
-
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
     - name: Install dependecies
-      run: source cibuild.sh
+      run: bash -x install_deps.sh
+    - name: Build release
+      run: |
+        export PATH="/tmp/qpakman:/tmp/fteqcc:/tmp/ericw-tools:$PATH"
+        time python3 build.py
