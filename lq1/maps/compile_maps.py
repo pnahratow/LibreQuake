@@ -92,7 +92,7 @@ def move_file(src, dest_dir):
 def command_make(specific_map=None):
     check_for_compiler()
 
-    for f in find('./', '.map')[:1]:
+    for f in find('./', '.map'):
         map_name = os.path.splitext(os.path.basename(f))[0]
 
         if specific_map and map_name != specific_map:

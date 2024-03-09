@@ -108,7 +108,7 @@ def build_release(name, data):
         command = ['qpakman']
         command.extend(filepaths)
         command.extend(['-o', '../pak0.pak'])
-        print(f'Creating pak0.pak...')
+        print('Creating pak0.pak...')
         subprocess.run(command, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE)
         os.chdir('../../')
         shutil.copy('working/pak0.pak', os.path.join('releases', name, base_dir, 'pak0.pak'))
@@ -121,7 +121,7 @@ def build_release(name, data):
         command = ['qpakman']
         command.extend(filepaths)
         command.extend(['-o', '../pak1.pak'])
-        print(f'Creating pak1.pak...')
+        print('Creating pak1.pak...')
         subprocess.run(command, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE)
         os.chdir('../../')
         shutil.copy('working/pak1.pak', os.path.join('releases', name, base_dir, 'pak1.pak'))
