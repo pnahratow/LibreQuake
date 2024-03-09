@@ -92,7 +92,7 @@ def move_file(src, dest_dir):
 def command_make(specific_map=None):
     check_for_compiler()
 
-    for f in find('./', '.map'):
+    for f in find('./', '.map')[:1]:
         map_name = os.path.splitext(os.path.basename(f))[0]
 
         if specific_map and map_name != specific_map:
@@ -107,7 +107,7 @@ def command_make(specific_map=None):
                 continue
 
         setup_compile_args(f)
-        print(f"- {f}")
+        print(f"Compiling {f}")
         devnull = open(os.devnull, 'w')
         subprocess.call([LQ_BSP_PATH] + LQ_BSP_FLAGS.split() + [f"{map_name}.map"],
                         stdout=devnull, cwd=os.path.dirname(f))
