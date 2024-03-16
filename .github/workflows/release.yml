@@ -16,8 +16,7 @@ jobs:
       run: |
         export PATH="/tmp/qpakman:/tmp/fteqcc:/tmp/ericw-tools:$PATH"
         python build.py
-        - name: Package Directories and Upload
-    - name: Tar and upload
+    - name: Tar
       run: |
         cd releases
         tar -czf full.tar.gz full
