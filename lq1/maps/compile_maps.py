@@ -8,6 +8,7 @@ import os
 import subprocess
 import sys
 import shutil
+from multiprocessing import Pool
 
 # Map compiler paths
 LQ_BSP_PATH = "qbsp"
@@ -36,8 +37,7 @@ def check_for_compiler():
 
 
 # Setup compile arguments
-def setup_compile_args(path):
-    global LQ_BSP_FLAGS, LQ_VIS_FLAGS, LQ_LIG_FLAGS
+def get_compile_args(path):
     LQ_BSP_FLAGS = LQ_DEF_BSP_FLAGS
     LQ_VIS_FLAGS = LQ_DEF_VIS_FLAGS
     LQ_LIG_FLAGS = LQ_DEF_LIG_FLAGS
@@ -52,6 +52,7 @@ def setup_compile_args(path):
                     LQ_VIS_FLAGS = line.split("\"")[1]
                 if line.startswith("LQ_LIG_FLAGS"):
                     LQ_LIG_FLAGS = line.split("\"")[1]
+    return LQ_BSP_FLAGS, LQ_VIS_FLAGS, LQ_LIG_FLAGS
 
 
 # Execute command
@@ -88,38 +89,36 @@ def move_file(src, dest_dir):
     shutil.move(src, dest_file)
 
 
+def process_map(map_path):
+    map_name = os.path.splitext(os.path.basename(map_path))[0]
+    print(f"Compiling f{map_name}")
+    LQ_BSP_FLAGS, LQ_VIS_FLAGS, LQ_LIG_FLAGS = get_compile_args(map_name)
+    workdir = os.path.dirname(map_path)
+    print(f"- Bsp {map_name}")
+    subprocess.call([LQ_BSP_PATH] + LQ_BSP_FLAGS.split() + [f"{map_name}.map"], stdout=subprocess.DEVNULL, cwd=workdir)
+    print(f"- Vis {map_name}")
+    subprocess.call([LQ_VIS_PATH] + LQ_VIS_FLAGS.split() + [f"{map_name}.bsp"], stdout=subprocess.DEVNULL, cwd=workdir)
+    print(f"- Light {map_name}")
+    subprocess.call([LQ_LIG_PATH] + LQ_LIG_FLAGS.split() + [f"{map_name}.bsp"], stdout=subprocess.DEVNULL, cwd=workdir)
+    print(f"Finished compiling {map_name}")
+
+
 # Command make
-def command_make(specific_map=None):
+def command_make(specific_map=None, max_workers=4):
     check_for_compiler()
 
-    for f in find('./', '.map'):
-        map_name = os.path.splitext(os.path.basename(f))[0]
+    maps = [f for f in find(os.getcwd(), ".map") if "skip" not in f and "archive" not in f and "autosave" not in f]
 
-        if specific_map and map_name != specific_map:
-            continue
+    if specific_map:
+        maps = [f for f in maps if specific_map in f]
 
-        if not specific_map:
-            if "skip" in f:
-                continue
-            if "archive" in f:
-                continue
-            if "autosave" in f:
-                continue
-
-        setup_compile_args(f)
-        print(f"- {f}")
-        devnull = open(os.devnull, 'w')
-        subprocess.call([LQ_BSP_PATH] + LQ_BSP_FLAGS.split() + [f"{map_name}.map"],
-                        stdout=devnull, cwd=os.path.dirname(f))
-        subprocess.call([LQ_VIS_PATH] + LQ_VIS_FLAGS.split() + [f"{map_name}.bsp"],
-                        stdout=devnull, cwd=os.path.dirname(f))
-        subprocess.call([LQ_LIG_PATH] + LQ_LIG_FLAGS.split() + [f"{map_name}.bsp"],
-                        stdout=devnull, cwd=os.path.dirname(f))
+    with Pool(processes=max_workers) as pool:
+        pool.map(process_map, maps)
 
     # Move bsp and lit files into the /lq1/maps directory
     print("Moving files...")
     for ext in [".bsp", ".lit"]:
-        for file in find('./src', ext):
+        for file in find("./src", ext):
             move_file(file, "./")
 
     print("* Build DONE")
