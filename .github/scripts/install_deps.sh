@@ -1,4 +1,7 @@
 #!/bin/bash
+
+set -e
+
 QPAKMAN_URL="https://github.com/bunder/qpakman/archive/refs/tags/v0.67.tar.gz"
 FTEQCC_URL="https://www.fteqcc.org/dl/fteqcc_linux64.zip"
 ERICW_TOOL_URL="https://github.com/ericwa/ericw-tools/releases/download/2.0.0-alpha6/ericw-tools-2.0.0-alpha6-Linux.zip"
@@ -31,3 +34,6 @@ mkdir -p "$ERICW_TOOL_DIR"
 cd "$ERICW_TOOL_DIR"
 wget -O ericw-tools.zip "$ERICW_TOOL_URL"
 unzip ericw-tools.zip
+
+# Done
+cd "$repo_root"

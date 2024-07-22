@@ -9,7 +9,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Install dependecies
-      run: bash -x install_deps.sh
+      run: bash -x .github/scripts/install_deps.sh
     - name: Build release
       env:
         PYTHONUNBUFFERED: 1
@@ -24,17 +24,17 @@ jobs:
         tar -czf dev.tar.gz dev
         cd ..
     - name: Upload full
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: full-artifact
         path: releases/full.tar.gz
     - name: Upload mod
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: mod-artifact
         path: releases/mod.tar.gz
     - name: Upload dev
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: dev-artifact
         path: releases/dev.tar.gz
