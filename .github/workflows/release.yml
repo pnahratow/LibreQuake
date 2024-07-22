@@ -1,7 +1,8 @@
 name: Build release
 
 on:
-  push:
+  release:
+    types: [created]
 
 jobs:
   build_release:
@@ -16,25 +17,32 @@ jobs:
       run: |
         export PATH="/tmp/qpakman:/tmp/fteqcc:/tmp/ericw-tools:$PATH"
         python build.py
-    - name: Tar
+    - name: Zip
       run: |
         cd releases
-        tar -czf full.tar.gz full
-        tar -czf mod.tar.gz mod
-        tar -czf dev.tar.gz dev
+        zip -r full.zip full
+        zip -r mod.zip mod
+        zip -r dev.zip dev
         cd ..
-    - name: Upload full
-      uses: actions/upload-artifact@v4
+    - name: Upload release asset
+      uses: actions/upload-release-asset@v1
       with:
-        name: full-artifact
-        path: releases/full.tar.gz
-    - name: Upload mod
-      uses: actions/upload-artifact@v4
-      with:
-        name: mod-artifact
-        path: releases/mod.tar.gz
-    - name: Upload dev
-      uses: actions/upload-artifact@v4
-      with:
-        name: dev-artifact
-        path: releases/dev.tar.gz
+        upload_url: ${{ github.event.release.upload_url }}
+        asset_path: releases/full.zip
+        asset_name: full.zip
+        asset_content_type: application/zip
+#    - name: Upload full
+#      uses: actions/upload-artifact@v4
+#      with:
+#        name: full-artifact
+#        path: releases/full.zip
+#    - name: Upload mod
+#      uses: actions/upload-artifact@v4
+#      with:
+#        name: mod-artifact
+#        path: releases/mod.zip
+#    - name: Upload dev
+#      uses: actions/upload-artifact@v4
+#      with:
+#        name: dev-artifact
+#        path: releases/dev.zip
