@@ -71,4 +71,3 @@ jobs:
         asset_path: releases/dev.zip
         asset_name: dev.zip
         asset_content_type: application/zip
-
