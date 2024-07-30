@@ -54,7 +54,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        map_dir: [brushmodels, dm, e0, e1, e2, e3, e4, misc, prefabs]
+        map_dir: [brushmodels, dm, e0, e1, e2, e3, e4, misc]
     steps:
     - uses: actions/checkout@v3
     - name: Install dependencies
@@ -73,6 +73,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: maps-artifact-${{ matrix.map_dir }}
+        if-no-files-found: error
         path: |
           ./lq1/maps/*.bsp
           ./lq1/maps/*.lit
@@ -131,11 +132,6 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name:  maps-artifact-misc
-        path: ./lq1/maps/
-    - name: Download maps-artifact-prefabs
-      uses: actions/download-artifact@v4
-      with:
-        name:  maps-artifact-prefabs
         path: ./lq1/maps/
     - name: Build releases
       run: |
