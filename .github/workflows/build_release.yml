@@ -27,6 +27,11 @@ jobs:
       run: |
         export PATH="/tmp/qpakman:/tmp/fteqcc:/tmp/ericw-tools:$PATH"
         python build.py --compile-wads
+    - name: Upload texture-wads
+      uses: actions/upload-artifact@v4
+      with:
+        name: texture-wads-artifact
+        path: ./texture-wads
 
   build_progs:
     runs-on: ubuntu-latest
@@ -40,6 +45,7 @@ jobs:
         python build.py --compile-progs
 
   build_maps:
+    needs: build_wads
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -48,8 +54,14 @@ jobs:
     - uses: actions/checkout@v3
     - name: Install dependencies
       run: bash -x .github/scripts/install_deps.sh
-    - name: Build progs
+    - name: Download texture-wads
+      uses: actions/download-artifact@v4
+      with:
+        name: texture-wads-artifact
+        path: ./texture-wads
+    - name: Build maps
       run: |
+        ls -alh texture-wads
         export PATH="/tmp/qpakman:/tmp/fteqcc:/tmp/ericw-tools:$PATH"
         cd lq1/maps
         python compile_maps.py -d src/${{ matrix.map_dir }}
