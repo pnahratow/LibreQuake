@@ -6,7 +6,6 @@ on:
   push:
     branches:
       - main
-      - parallel_build
 
 env:
   PYTHONUNBUFFERED: 1
