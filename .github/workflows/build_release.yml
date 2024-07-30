@@ -6,6 +6,7 @@ on:
   push:
     branches:
       - main
+      - parallel_build
 
 # Cancel redundant builds on the same branch
 concurrency:
