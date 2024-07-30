@@ -10,6 +10,10 @@ on:
 
 env:
   PYTHONUNBUFFERED: 1
+  PATH: /tmp/qpakman:/tmp/fteqcc:/tmp/ericw-tools:$PATH
+
+# export PATH="/tmp/qpakman:/tmp/fteqcc:/tmp/ericw-tools:$PATH"
+
 
 # Cancel redundant builds on the same branch
 concurrency:
@@ -25,7 +29,7 @@ jobs:
       run: bash -x .github/scripts/install_deps.sh
     - name: Build wads
       run: |
-        export PATH="/tmp/qpakman:/tmp/fteqcc:/tmp/ericw-tools:$PATH"
+        echo "$PATH"
         python build.py --compile-wads
     - name: Upload texture-wads-artifact
       uses: actions/upload-artifact@v4
@@ -40,9 +44,7 @@ jobs:
     - name: Install dependencies
       run: bash -x .github/scripts/install_deps.sh
     - name: Build progs
-      run: |
-        export PATH="/tmp/qpakman:/tmp/fteqcc:/tmp/ericw-tools:$PATH"
-        python build.py --compile-progs
+      run: python build.py --compile-progs
     - name: Upload progs-artifact
       uses: actions/upload-artifact@v4
       with:
@@ -66,7 +68,6 @@ jobs:
         path: texture-wads
     - name: Build maps
       run: |
-        export PATH="/tmp/qpakman:/tmp/fteqcc:/tmp/ericw-tools:$PATH"
         cd lq1/maps
         python compile_maps.py -d src/${{ matrix.map_dir }}
     - name: Upload maps-artifact
@@ -136,11 +137,7 @@ jobs:
         name:  maps-artifact-misc
         path: lq1/maps/
     - name: Build releases
-      run: |
-        ls -alh texture-wads
-        ls -alh lq1
-        ls -alh lq1/maps/
-        python build.py --build
+      run: python build.py --build
 
 #   build_release:
 #     runs-on: ubuntu-latest
