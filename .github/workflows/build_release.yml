@@ -31,7 +31,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: texture-wads-artifact
-        path: ./texture-wads/*.wad
+        path: texture-wads/*.wad
 
   build_progs:
     runs-on: ubuntu-latest
@@ -63,7 +63,7 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: texture-wads-artifact
-        path: ./texture-wads
+        path: texture-wads
     - name: Build maps
       run: |
         export PATH="/tmp/qpakman:/tmp/fteqcc:/tmp/ericw-tools:$PATH"
@@ -75,8 +75,8 @@ jobs:
         name: maps-artifact-${{ matrix.map_dir }}
         if-no-files-found: error
         path: |
-          ./lq1/maps/*.bsp
-          ./lq1/maps/*.lit
+          lq1/maps/*.bsp
+          lq1/maps/*.lit
 
   assemble_releases:
     needs: [build_wads, build_progs, build_maps]
@@ -87,52 +87,52 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: texture-wads-artifact
-        path: ./texture-wads
+        path: texture-wads
     - name: Download progs-artifact
       uses: actions/download-artifact@v4
       with:
         name: progs-artifact
-        path: ./lq1/progs.dat
+        path: lq1/
     - name: Download maps-artifact-brushmodels
       uses: actions/download-artifact@v4
       with:
         name:  maps-artifact-brushmodels
-        path: ./lq1/maps/
+        path: lq1/maps/
     - name: Download maps-artifact-dm
       uses: actions/download-artifact@v4
       with:
         name:  maps-artifact-dm
-        path: ./lq1/maps/
+        path: lq1/maps/
     - name: Download maps-artifact-e0
       uses: actions/download-artifact@v4
       with:
         name:  maps-artifact-e0
-        path: ./lq1/maps/
+        path: lq1/maps/
     - name: Download maps-artifact-e1
       uses: actions/download-artifact@v4
       with:
         name:  maps-artifact-e1
-        path: ./lq1/maps/
+        path: lq1/maps/
     - name: Download maps-artifact-e2
       uses: actions/download-artifact@v4
       with:
         name:  maps-artifact-e2
-        path: ./lq1/maps/
+        path: lq1/maps/
     - name: Download maps-artifact-e3
       uses: actions/download-artifact@v4
       with:
         name:  maps-artifact-e3
-        path: ./lq1/maps/
+        path: lq1/maps/
     - name: Download maps-artifact-e4
       uses: actions/download-artifact@v4
       with:
         name:  maps-artifact-e4
-        path: ./lq1/maps/
+        path: lq1/maps/
     - name: Download maps-artifact-misc
       uses: actions/download-artifact@v4
       with:
         name:  maps-artifact-misc
-        path: ./lq1/maps/
+        path: lq1/maps/
     - name: Build releases
       run: |
         ls -alh texture-wads
