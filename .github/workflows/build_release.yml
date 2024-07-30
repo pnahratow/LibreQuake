@@ -80,8 +80,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-    - name: Install dependencies
-      run: bash -x .github/scripts/install_deps.sh
+    # Download all the artifacts created so far
     - name: Download texture-wads-artifact
       uses: actions/download-artifact@v4
       with:
@@ -92,81 +91,72 @@ jobs:
       with:
         name: progs-artifact
         path: lq1/
-    - name: Download maps-artifact-brushmodels
+    - name: Download maps-artifacts
       uses: actions/download-artifact@v4
       with:
-        name:  maps-artifact-brushmodels
+        pattern: maps-artifact-*
         path: lq1/maps/
-    - name: Download maps-artifact-dm
-      uses: actions/download-artifact@v4
-      with:
-        name:  maps-artifact-dm
-        path: lq1/maps/
-    - name: Download maps-artifact-e0
-      uses: actions/download-artifact@v4
-      with:
-        name:  maps-artifact-e0
-        path: lq1/maps/
-    - name: Download maps-artifact-e1
-      uses: actions/download-artifact@v4
-      with:
-        name:  maps-artifact-e1
-        path: lq1/maps/
-    - name: Download maps-artifact-e2
-      uses: actions/download-artifact@v4
-      with:
-        name:  maps-artifact-e2
-        path: lq1/maps/
-    - name: Download maps-artifact-e3
-      uses: actions/download-artifact@v4
-      with:
-        name:  maps-artifact-e3
-        path: lq1/maps/
-    - name: Download maps-artifact-e4
-      uses: actions/download-artifact@v4
-      with:
-        name:  maps-artifact-e4
-        path: lq1/maps/
-    - name: Download maps-artifact-misc
-      uses: actions/download-artifact@v4
-      with:
-        name:  maps-artifact-misc
-        path: lq1/maps/
+        merge-multiple: true
+    # Assemble the releases from the artifacts
+    - name: Install dependencies
+      run: bash -x .github/scripts/install_deps.sh
     - name: Build releases
       run: python build.py --build
+    - name: Zip artifacts
+      run: |
+        cd releases
+        zip -r full.zip full
+        zip -r mod.zip mod
+        zip -r lite.zip lite
+        zip -r mod_lite.zip mod_lite
+        zip -r dev.zip dev
+        cd ..
+    # Upload the completed release artifacts
     - name: Upload full.zip
       uses: actions/upload-artifact@v4
       with:
         name: full.zip
-        path: releases/full
+        path: releases/full.zip
     - name: Upload mod.zip
       uses: actions/upload-artifact@v4
       with:
         name: mod.zip
-        path: releases/mod
+        path: releases/mod.zip
     - name: Upload lite.zip
       uses: actions/upload-artifact@v4
       with:
         name: lite.zip
-        path: releases/lite
+        path: releases/lite.zip
     - name: Upload mod_lite.zip
       uses: actions/upload-artifact@v4
       with:
         name: mod_lite.zip
-        path: releases/mod_lite
+        path: releases/mod_lite.zip
     - name: Upload dev.zip
       uses: actions/upload-artifact@v4
       with:
         name: dev.zip
-        path: releases/dev
+        path: releases/dev.zip
 
-#    - name: Upload asset full.zip
-#      if: github.event_name == 'release'
-#      uses: actions/upload-release-asset@v1
-#      env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#      with:
-#        upload_url: ${{ github.event.release.upload_url }}
-#        asset_path: releases/full.zip
-#        asset_name: full.zip
-#        asset_content_type: application/zip
+  upload_to_release_page:
+    if: github.event_name == 'release'
+    needs: assemble_releases
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        release_type: [full, mod, lite, mod_lite, dev]
+    steps:
+      - name: Download release artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ matrix.release_type }}.zip
+          path: releases/
+      - name: Upload asset  ${{ matrix.release_type }}.zip
+        uses: actions/upload-release-asset@v1
+        env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: releases/ ${{ matrix.release_type }}.zip
+          asset_name:  ${{ matrix.release_type }}.zip
+          asset_content_type: application/zip
