@@ -24,9 +24,7 @@ jobs:
     - name: Install dependencies
       run: bash -x .github/scripts/install_deps.sh
     - name: Build wads
-      run: |
-        echo "$PATH"
-        python build.py --compile-wads
+      run: python build.py --compile-wads
     - name: Upload texture-wads-artifact
       uses: actions/upload-artifact@v4
       with:
@@ -157,6 +155,6 @@ jobs:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ github.event.release.upload_url }}
-          asset_path: releases/ ${{ matrix.release_type }}.zip
+          asset_path: releases/${{ matrix.release_type }}.zip
           asset_name:  ${{ matrix.release_type }}.zip
           asset_content_type: application/zip
