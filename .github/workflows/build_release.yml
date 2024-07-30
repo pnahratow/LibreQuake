@@ -73,7 +73,9 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: maps-artifact-${{ matrix.map_dir }}
-        path: ./lq1/maps/*.{bsp,lit}
+        path: |
+          ./lq1/maps/*.bsp
+          ./lq1/maps/*.lit
 
   assemble_releases:
     needs: [build_wads, build_progs, build_maps]
