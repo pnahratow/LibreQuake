@@ -10,10 +10,6 @@ on:
 
 env:
   PYTHONUNBUFFERED: 1
-  PATH: /tmp/qpakman:/tmp/fteqcc:/tmp/ericw-tools:$PATH
-
-# export PATH="/tmp/qpakman:/tmp/fteqcc:/tmp/ericw-tools:$PATH"
-
 
 # Cancel redundant builds on the same branch
 concurrency:
