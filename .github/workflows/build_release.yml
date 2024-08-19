@@ -6,6 +6,7 @@ on:
   push:
     branches:
       - main
+      - fail_build_on_errors
 
 env:
   PYTHONUNBUFFERED: 1
