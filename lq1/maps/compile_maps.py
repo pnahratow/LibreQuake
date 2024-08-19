@@ -110,13 +110,32 @@ def command_make(specific_map=None, specific_dir=None):
 
         setup_compile_args(f)
         print(f"Compiling {f}")
-        devnull = open(os.devnull, 'w')
-        subprocess.call([LQ_BSP_PATH] + LQ_BSP_FLAGS.split() + [f"{map_name}.map"],
-                        stdout=devnull, cwd=os.path.dirname(f))
-        subprocess.call([LQ_VIS_PATH] + LQ_VIS_FLAGS.split() + [f"{map_name}.bsp"],
-                        stdout=devnull, cwd=os.path.dirname(f))
-        subprocess.call([LQ_LIG_PATH] + LQ_LIG_FLAGS.split() + [f"{map_name}.bsp"],
-                        stdout=devnull, cwd=os.path.dirname(f))
+
+        try:
+            subprocess.run(
+                [LQ_BSP_PATH] + LQ_BSP_FLAGS.split() + [f"{map_name}.map"],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                check=True,  # Fail on non-zero exit code
+                cwd=os.path.dirname(f),
+            )
+            subprocess.run(
+                [LQ_VIS_PATH] + LQ_VIS_FLAGS.split() + [f"{map_name}.bsp"],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                check=True,  # Fail on non-zero exit code
+                cwd=os.path.dirname(f),
+            )
+            subprocess.run(
+                [LQ_LIG_PATH] + LQ_LIG_FLAGS.split() + [f"{map_name}.bsp"],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                check=True,  # Fail on non-zero exit code
+                cwd=os.path.dirname(f),
+            )
+        except subprocess.CalledProcessError as e:
+            print(f"Command failed: {e.stdout.decode('utf-8')}")
+            raise e
 
     # Move bsp and lit files into the /lq1/maps directory
     print("Moving files...")
