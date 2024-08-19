@@ -134,7 +134,7 @@ def command_make(specific_map=None, specific_dir=None):
                 cwd=os.path.dirname(f),
             )
         except subprocess.CalledProcessError as e:
-            print(f"Command failed: {e.stdout.decode('utf-8')}")
+            print(f"!!! Command failed:\n{e.stdout.decode('utf-8')}")
             raise e
 
     # Move bsp and lit files into the /lq1/maps directory

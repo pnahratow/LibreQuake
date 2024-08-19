@@ -36,7 +36,7 @@ def make():
                 check=True,  # Fail on non-zero exit code
             )
         except subprocess.CalledProcessError as e:
-            print(f"Command failed: {e.stdout.decode('utf-8')}")
+            print(f"!!! Command failed:\n{e.stdout.decode('utf-8')}")
             raise e
 
 
